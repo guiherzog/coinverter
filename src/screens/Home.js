@@ -1,45 +1,66 @@
 import React, { Component } from 'react';
-import { Text, View, StyleSheet } from 'react-native';
+import { Text, ScrollView, StyleSheet } from 'react-native';
 import { Constants } from 'expo';
 
 import CurrencyField from '../components/CurrencyField';
 
 export default class Home extends Component {
   state = {
-    value: 12,
+    baseValue: 1,
+    rates: [],
+  }
+
+  async componentWillMount(){
+    await this.getExchangeRateFromAPI();
+  }
+
+  getExchangeRateFromAPI = async () => {
+    const result = await fetch('https://txf-ecb.glitch.me/rates');
+    if (result.status === 200){
+      const data = await result.json();
+      this.setState({ rates: data.rates });
+    }
   }
   
-  onChangeText = (value) => {
-    this.setState({value});
+  onChangeText = (baseValue) => {
+    this.setState({baseValue});
+  }
+
+  renderCurrencyFields = () => {
+    const rates = [ ...this.state.rates];
+
+    const currencyFields = rates.map(item => (
+        <CurrencyField
+          key={`currency_${item.currency}`}
+          currency={item.currency}
+          baseValue={this.state.baseValue}
+          rate={item.rate}
+          onChangeText={this.onChangeText}
+        />
+    ));
+
+    return currencyFields;
+
   }
   
   render() {
     return (
-      <View style={styles.container}>
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={styles.contentContainer}
+      >
         <Text style={styles.paragraph}>
           CoinVerter
         </Text>
-        <CurrencyField 
-          country='EU' 
-          value={this.state.value}
-          onChangeText={this.onChangeText}
+        <CurrencyField
+          key={`currency_EUR`}
+          currency='EUR'
+          baseValue={this.state.baseValue}
+          rate={1}
+          onChangeText={this.onChangeText} 
         />
-        <CurrencyField 
-          country='BR' 
-          value={this.state.value}
-          onChangeText={this.onChangeText}
-        />
-        <CurrencyField 
-          country='US'
-          value={this.state.value}
-          onChangeText={this.onChangeText}
-        />
-        <CurrencyField 
-          country='AU' 
-          value={this.state.value}
-          onChangeText={this.onChangeText}
-        />
-      </View>
+        {this.renderCurrencyFields()}
+      </ScrollView>
     );
   }
 }
@@ -47,9 +68,12 @@ export default class Home extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
     paddingTop: Constants.statusBarHeight,
     backgroundColor: '#F9F9F9',
+    paddingBottom: 50,
+  },
+  contentContainer: {
+    alignItems: 'center',
   },
   paragraph: {
     margin: 24,

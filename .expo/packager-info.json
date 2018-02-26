@@ -1,8 +1,8 @@
 {
   "expoServerPort": 19000,
-  "packagerPort": 19001,
-  "packagerPid": 98146,
-  "expoServerNgrokUrl": null,
-  "packagerNgrokUrl": null,
-  "ngrokPid": null
+  "packagerPort": 19002,
+  "packagerPid": 877,
+  "expoServerNgrokUrl": "https://5y-9sn.guilhermeherzog.coinverter.exp.direct",
+  "packagerNgrokUrl": "https://packager.5y-9sn.guilhermeherzog.coinverter.exp.direct",
+  "ngrokPid": 889
 }

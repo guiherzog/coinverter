@@ -1,37 +1,42 @@
 import React, { Component } from 'react';
 import { TextInput, Text, View, StyleSheet, Image } from 'react-native';
 import _ from 'lodash';
+import getSymbolFromCurrency from 'currency-symbol-map'
 
 import Colors from '../theme/colors';
-
-const countryToEuro = {
-  BR: 4,
-  US: 1.2,
-  AU: 2,
-  EU: 1,
-}
+import currencyToCountry from '../utils/currencyToCountry';
 
 export default class CurrencyField extends Component {
-  getCorrespondingCurrency = (value, code) => {
-     const convertedValue = Number(value*countryToEuro[code]);
+  getCorrespondingCurrency = (value) => {
+     const convertedValue = _.round(value*this.props.rate, 2);
      return `${convertedValue}`;
+  }
+
+  onChangeText = (value) => {
+    // Recalculates the baseValue corresponding to the modified input.
+    return this.props.onChangeText(_.round(value/this.props.rate));
   }
   
   render() {
     return (
       <View style={styles.container}>
+        <Text style={styles.symbol}>{getSymbolFromCurrency(this.props.currency)}</Text>
+        <TextInput
+          textAlign={'left'}
+          onChangeText={value => this.onChangeText(value)}
+          keyboardType='numeric' 
+          underlineColorAndroid='rgba(0,0,0,0)' // To remove underline on Android
+          value={this.getCorrespondingCurrency(this.props.baseValue)}
+          style={styles.input}
+        />
+        <View style={styles.details}>
+          <Text style={styles.countryName}>{currencyToCountry[this.props.currency][0].Country}</Text>
+          <Text style={styles.currencyName}>{currencyToCountry[this.props.currency][0].Currency}</Text>
+        </View>
         <Image 
           style={styles.flag}
           resizeMode={Image.resizeMode.cover}
-          source={{uri:`http://www.countryflags.io/${this.props.country}/flat/64.png`}} 
-        />
-        <Text style={styles.currencyCode}>{this.props.country}</Text>
-        <TextInput
-          onChangeText={text => this.props.onChangeText(text)}
-          keyboardType='numeric' 
-          underlineColorAndroid='rgba(0,0,0,0)' // To remove underline on Android
-          value={this.getCorrespondingCurrency(this.props.value, this.props.country)}
-          style={styles.input}
+          source={{uri:`http://www.countryflags.io/${currencyToCountry[this.props.currency][0].CountryCode}/flat/64.png`}} 
         />
       </View>
     );
@@ -45,7 +50,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: '95%',
     borderRadius: 5,
-    marginBottom: 10,
+    marginBottom: 5,
     borderColor: Colors.gray,
     borderWidth: 0.25,
     backgroundColor: Colors.white,
@@ -54,22 +59,37 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.05,
     height: 60,
   },
+  symbol: {
+    marginLeft: 10,
+    fontSize: 20,
+    minWidth: 30,
+    color: Colors.darkGray,
+  },
   flag: {
     margin: 10,
     height: 40,
     width: 40,
-    borderRadius: 20,
   },
-  currencyCode:{
-    fontSize: 26,
+  countryName:{
+    fontSize: 20,
     color: Colors.black,
+    textAlign: 'right',
+  },
+  currencyName:{
+    fontSize: 14,
+    color: Colors.darkGray,
+    textAlign: 'right',
   },
   input: {
     height: '100%',
+    fontWeight: '600',
     flex: 1,
-    marginHorizontal: 10,
+    marginLeft: 3,
+    marginRight: 10,
     color: Colors.black,
-    fontSize: 36,
-    textAlign: 'right'
+    fontSize: 28,
+    paddingHorizontal: 5,
+    textAlign: 'left',
+    backgroundColor: Colors.lightGray,
   }
 });
