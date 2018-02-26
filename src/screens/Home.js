@@ -17,7 +17,7 @@ export default class Home extends Component {
     return (
       <View style={styles.container}>
         <Text style={styles.paragraph}>
-          Currency Converter
+          CoinVerter
         </Text>
         <CurrencyField 
           country='EU' 
@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     paddingTop: Constants.statusBarHeight,
-    backgroundColor: '#ecf0f1',
+    backgroundColor: '#F9F9F9',
   },
   paragraph: {
     margin: 24,

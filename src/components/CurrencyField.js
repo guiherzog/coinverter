@@ -2,15 +2,18 @@ import React, { Component } from 'react';
 import { TextInput, Text, View, StyleSheet, Image } from 'react-native';
 import _ from 'lodash';
 
+import Colors from '../theme/colors';
+
 const countryToEuro = {
   BR: 4,
   US: 1.2,
   AU: 2,
   EU: 1,
 }
+
 export default class CurrencyField extends Component {
   getCorrespondingCurrency = (value, code) => {
-     const convertedValue = _.round(value*countryToEuro[code], 2);
+     const convertedValue = Number(value*countryToEuro[code]);
      return `${convertedValue}`;
   }
   
@@ -25,7 +28,8 @@ export default class CurrencyField extends Component {
         <Text style={styles.currencyCode}>{this.props.country}</Text>
         <TextInput
           onChangeText={text => this.props.onChangeText(text)}
-          keyboardType='numeric'
+          keyboardType='numeric' 
+          underlineColorAndroid='rgba(0,0,0,0)' // To remove underline on Android
           value={this.getCorrespondingCurrency(this.props.value, this.props.country)}
           style={styles.input}
         />
@@ -39,31 +43,32 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     flexDirection: 'row',
-    width: '100%',
+    width: '95%',
+    borderRadius: 5,
     marginBottom: 10,
-    backgroundColor: "#07A0C3",
-    shadowOffset:{width: 1, height: 1},
-    shadowColor: '#07A0C3',
+    borderColor: Colors.gray,
+    borderWidth: 0.25,
+    backgroundColor: Colors.white,
+    shadowOffset:{width: 0.5, height: 0.5},
+    shadowColor: Colors.black,
     shadowOpacity: 0.05,
-    height: 80,
+    height: 60,
   },
   flag: {
     margin: 10,
-    height: 60,
-    width: 60,
-    resizeMode: 'cover',
-    borderRadius: 30,
-    backgroundColor: 'red',
+    height: 40,
+    width: 40,
+    borderRadius: 20,
   },
   currencyCode:{
     fontSize: 26,
-    color: 'white',
+    color: Colors.black,
   },
   input: {
     height: '100%',
     flex: 1,
     marginHorizontal: 10,
-    color: 'white',
+    color: Colors.black,
     fontSize: 36,
     textAlign: 'right'
   }
