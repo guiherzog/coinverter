@@ -5,6 +5,6 @@ module.exports = {
   black: '#3B3B3B',
   red: '#FF625C',
   lightGray: '#F9F9F9',
-  darkGray: '#7A7A7A',
+  darkGray: '#B2B2B2',
   gray: '#E0E0E0',
 };
